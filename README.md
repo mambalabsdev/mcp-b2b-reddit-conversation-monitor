@@ -95,8 +95,10 @@ Every buyer facing input of the actor, unchanged. Omitted inputs take the actor'
 | `category_keywords` | array | Category mode. Product lane phrases |
 | `known_companies` | array | Category and gap modes. Names to always count |
 | `topic` | string | Gap mode. What the questions are about |
+| `topic_terms` | array | Gap mode. More search phrases for the same need |
 | `subreddits` | array | Limit searches to these subreddits |
 | `exclude_subreddits` | array | Drop rows from these subreddits |
+| `vendor_subreddits` | string | exclude (default) or flag. A vendor's own subreddit is dropped, or kept with `vendor_subreddit` true and out of every count |
 | `discover_subreddits` | string | Gap mode. Default true |
 | `since_days` | string | Date window in days. Default 90 |
 | `max_threads` | string | Thread rows per input, up to 1000. Default 100 |

@@ -16,7 +16,7 @@ const ACTOR_REQUIRED = [];
 // Every input the live actor exposes to a buyer must be exposed by the tool.
 // Hidden schema fields are excluded by rule: source_tag is the landing page
 // attribution tag the actor sets for itself, not something a caller supplies.
-const ACTOR_INPUTS = ["brand_names", "category_keywords", "comment_depth", "company_domain", "competitors", "discover_competitors", "discover_subreddits", "domains", "exclude_subreddits", "include_comments", "include_hacker_news", "known_companies", "max_charge_usd", "max_comment_threads", "max_comments_per_thread", "max_competitors", "max_threads", "mode", "only_new", "product_names", "proxy_mode", "since_days", "state_key", "subreddits", "topic", "use_identity_resolver", "webhook_top_n", "webhook_url"];
+const ACTOR_INPUTS = ["brand_names", "category_keywords", "comment_depth", "company_domain", "competitors", "discover_competitors", "discover_subreddits", "domains", "exclude_subreddits", "include_comments", "include_hacker_news", "known_companies", "max_charge_usd", "max_comment_threads", "max_comments_per_thread", "max_competitors", "max_threads", "mode", "only_new", "product_names", "proxy_mode", "since_days", "state_key", "subreddits", "topic", "topic_terms", "use_identity_resolver", "vendor_subreddits", "webhook_top_n", "webhook_url"];
 
 // Speak MCP over stdio to the built server and return the tools/list result.
 // No APIFY_TOKEN is set, on purpose: a client must see capabilities before it
