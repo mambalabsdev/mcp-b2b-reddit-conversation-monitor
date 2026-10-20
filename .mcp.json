@@ -1,0 +1,14 @@
+{
+  "mcpServers": {
+    "mamba-b2b-reddit-conversation-monitor": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@mambalabsdev/mcp-b2b-reddit-conversation-monitor"
+      ],
+      "env": {
+        "APIFY_TOKEN": "your-apify-token"
+      }
+    }
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "name": "mcp-b2b-reddit-conversation-monitor",
+  "displayName": "B2B Reddit Conversation Monitor",
+  "version": "1.0.0",
+  "description": "MCP server for B2B Reddit Conversation Monitor. Find the Reddit threads that name a company, its competitors, or a product category: tagged threads and comments (complaint, switching, buying intent, alternative request) with an intent score, plus share of voice, category, and question theme summary rows. Runs on Apify. Clay-ready output.",
+  "author": {
+    "name": "Mamba Labs",
+    "email": "labs@mambamindsetgrowth.com"
+  },
+  "homepage": "https://mambabuilt.com",
+  "repository": "https://github.com/mambalabsdev/mcp-b2b-reddit-conversation-monitor",
+  "license": "MIT",
+  "category": "productivity",
+  "tags": [
+    "reddit",
+    "brand-monitoring",
+    "social-listening",
+    "apify",
+    "clay"
+  ],
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "reddit",
+    "social-listening",
+    "apify",
+    "clay"
+  ],
+  "mcpServers": ".mcp.json"
+}
