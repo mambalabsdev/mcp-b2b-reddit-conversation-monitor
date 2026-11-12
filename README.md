@@ -4,7 +4,15 @@
 
 <a href="https://mcprush.com/to/b2b-reddit-conversation-monitor-mcp?ref=badge"><img width="380" height="200" src="https://mcprush.com/badge/b2b-reddit-conversation-monitor-mcp/card.svg" alt="B2b Reddit Conversation Monitor MCP server" /></a>
 
-An MCP server for the Mamba Labs B2B Reddit Conversation Monitor actor on Apify. Give it a company domain, product category keywords, or a topic. Each run reads public Reddit feeds and returns tagged threads and comments, plus summary rows: share of voice against competitors, the most discussed companies in a category, or recurring questions grouped by theme.
+> **Status, 12 November 2026**
+>
+> **Working:** Reddit threads and comments from the Arctic Shift archive of public Reddit posts (no key, about 15 minutes behind live Reddit), searched in the subreddits you name or 8 default business subreddits. Keyword search across all of Reddit with your own Serper or Brave search key. Hacker News and Product Hunt, unchanged.
+>
+> **Changed:** Reddit closed logged-out search around 5 November 2026 and ends RSS on 13 November 2026. Actor version 0.1 read those feeds, so its Reddit searches returned 0 rows from about 5 November. Actor version 0.2 and this server's 1.1.0 read no Reddit feed. What to use instead: name your `subreddits`, or pass your own key in `search_api_key`. Pick the route in `reddit_route`; if it fails, the actor switches to the other route and says so in `route_note`.
+>
+> A blocked run charges only the start fee.
+
+An MCP server for the Mamba Labs B2B Reddit Conversation Monitor actor on Apify. Give it a company domain, product category keywords, or a topic. Each run reads public Reddit posts and comments through the route you pick (the Arctic Shift archive with no key, or your own Serper or Brave key) and returns tagged threads and comments, plus summary rows: share of voice against competitors, the most discussed companies in a category, or recurring questions grouped by theme. Every row names its route in `data_route`.
 
 ## What's Inside
 
@@ -16,6 +24,8 @@ An MCP server for the Mamba Labs B2B Reddit Conversation Monitor actor on Apify.
 - [Inputs](#inputs)
 - [Pricing](#pricing)
 - [Your keys](#your-keys)
+- [FAQ](#faq)
+- [Version notes](#version-notes)
 - [Full actor documentation](#full-actor-documentation)
 - [License](#license)
 
@@ -26,6 +36,16 @@ Three modes:
 - **company**: give `company_domain` (for example smartlead.ai). You get the threads and comments that name the brand or its competitors, each tagged complaint, praise, comparison, alternative_request, switching, buying_intent, feature_request, or question, with sentiment and a 0 to 100 intent score. A row gets `displacement_signal` true when one sentence names a competitor and complains about it, switches from it, or asks for an alternative to it. One company summary row carries mention counts, the sentiment split, share of voice per competitor, and the top complaint themes.
 - **category**: give `category_keywords` (for example cold email tools). You get the threads plus one row per company discussed in two or more threads, with mention counts, sentiment, and share of voice.
 - **gap**: give `subreddits`, a `topic`, or both. You get the questions people ask (is there a tool for, how do I, alternative to), grouped by theme, with how many went unanswered and which tools the answers named.
+
+Reddit routes (`reddit_route`):
+
+| Route | Where Reddit rows come from | Needs | Comments |
+|---|---|---|---|
+| `arctic_shift` (default) | Arctic Shift, a free public archive of Reddit posts and comments run by an independent open source project | Subreddits; with none named and no key, r/sales, r/SaaS, r/startups, r/Entrepreneur, r/marketing, r/smallbusiness, r/coldemail, r/b2bmarketing | Yes |
+| `search_key` | Your own Serper or Brave key searches `site:reddit.com`; hits are read back through Arctic Shift | `search_api_key` | No |
+| `both` | Both, duplicates removed | Same as above | Arctic Shift rows only |
+
+If the route you pick fails (no answer, a timeout, a refused key, a key with no credits), the actor switches to the other route when it can run, and `route_note` says so. `search_key` with no key returns one free `error` row per input that says so, and no other route runs in its place. Each Reddit thread row also gets `embed_checked` and `post_state` (`live`, `removed`, `unknown`) from Reddit's public post embed.
 
 Tags, sentiment, and the score are rule based. Blocked or empty results come back free with a `row_status` saying so. All of the work runs on Apify. This package is a thin client that starts the actor run, waits for it, and hands back the dataset rows.
 
@@ -98,7 +118,10 @@ Every buyer facing input of the actor, unchanged. Omitted inputs take the actor'
 | `known_companies` | array | Category and gap modes. Names to always count |
 | `topic` | string | Gap mode. What the questions are about |
 | `topic_terms` | array | Gap mode. More search phrases for the same need |
-| `subreddits` | array | Limit searches to these subreddits |
+| `reddit_route` | string | arctic_shift (default), search_key, or both |
+| `search_provider` | string | serper or brave. Empty: read from the key |
+| `search_api_key` | string | Your own Serper or Brave key. Optional |
+| `subreddits` | array | Limit searches to these subreddits. Arctic Shift needs subreddits; with none and no key, 8 default subreddits are searched |
 | `exclude_subreddits` | array | Drop rows from these subreddits |
 | `vendor_subreddits` | string | exclude (default) or flag. A vendor's own subreddit is dropped, or kept with `vendor_subreddit` true and out of every count |
 | `discover_subreddits` | string | Gap mode. Default true |
@@ -106,15 +129,15 @@ Every buyer facing input of the actor, unchanged. Omitted inputs take the actor'
 | `max_threads` | string | Thread rows per input, up to 1000. Default 100 |
 | `include_comments` | string | Comment rows. Default true in company and gap, false in category |
 | `max_comment_threads` | string | Threads opened for comments. Default 20, 30 in category, 50 in gap |
-| `max_comments_per_thread` | string | Default 25 |
-| `comment_depth` | string | Default 2 |
+| `max_comments_per_thread` | string | Kept per opened thread, highest score first. Default 25 |
+| `comment_depth` | string | Reply levels kept. Default 2 |
 | `include_hacker_news` | string | Default false |
 | `max_charge_usd` | string | Optional cost cap for the run |
 | `only_new` | string | Skip rows an earlier run with the same state_key returned. Default false |
 | `state_key` | string | Names the seen list |
 | `webhook_url` | string | Optional https URL for a Slack compatible POST |
 | `webhook_top_n` | string | Default 10 |
-| `proxy_mode` | string | auto or residential. Default auto |
+| `proxy_mode` | string | auto or residential, for the post embed and Product Hunt only. Default auto |
 
 ## Pricing
 
@@ -127,11 +150,28 @@ Pay per event on Apify, billed to your Apify account. Prices in USD.
 | `summary-row`, per company summary, category company, or question theme row | $0.003 | $0.00285 | $0.0027 | $0.00255 |
 | `apify-actor-start`, per run start | $0.0005 | $0.0005 | $0.0005 | $0.0005 |
 
-Blocked, error, and no results rows, and rows skipped by `only_new`, are free.
+A blocked run charges only the start fee. Blocked, error, and no results rows, and rows skipped by `only_new`, are free. A row found through a fallback route costs the same as any row; the route that failed costs nothing.
 
 ## Your keys
 
-The actor needs no key. It reads public Reddit feeds and holds no Reddit key or any other key. Proxy traffic adds nothing to your price: Mamba Labs pays the platform costs of the run. `proxy_mode` is a reliability setting.
+The actor needs no key. With no key it reads Reddit through Arctic Shift. A Serper or Brave key of your own (`search_api_key`) adds keyword search across all of Reddit and a fallback route; you pay the search service for its calls, and the actor's prices do not change. Exa is not offered: it returns no reddit.com pages. The actor holds no key of its own; your key is passed to your own Apify run, marked secret, and never written to a row, a log, or the run summary. The search key route was tested with recorded answers and with refused keys; your first run with your key is its live test. Proxy traffic adds nothing to your price: Mamba Labs pays the platform costs of the run. `proxy_mode` is a reliability setting for the post embed and Product Hunt only.
+
+## FAQ
+
+**Why did Reddit results stop in early November 2026?** Reddit closed logged-out search around 5 November 2026 and ends RSS on 13 November 2026. Actor version 0.2 (12 November 2026) reads Arctic Shift and your own search key instead.
+
+**Do I need a key?** No. Name your subreddits, or 8 default business subreddits are searched. A key adds search across all of Reddit.
+
+**What does a blocked run cost?** Only the start fee.
+
+**Why does a post read `[removed]`?** Arctic Shift stores a post when it is made. `post_state` shows its state on Reddit at run time.
+
+## Version notes
+
+Newest first.
+
+- **1.1.0, 12 November 2026.** Matches actor version 0.2. New inputs `reddit_route`, `search_provider`, `search_api_key`; rows carry `data_route`, `embed_checked`, `post_state`, `route_note`. Reddit no longer read through RSS. No price change.
+- **1.0.2.** npm README refresh.
 
 ## Full actor documentation
 
