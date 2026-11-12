@@ -245,7 +245,7 @@ server.registerTool(
       state_key: z.string().optional().describe("Names the seen list for only_new."),
       webhook_url: z.string().optional().describe("Optional https URL. One POST at the end with a Slack compatible text field and the top rows."),
       webhook_top_n: z.string().optional().describe("Rows in the webhook, 1 to 50. Default 10."),
-      proxy_mode: z.enum(["auto", "residential"]).optional().describe("Used only to read Reddit's public post embed and Product Hunt pages. auto uses the Apify datacenter proxy and moves to residential when refused; residential uses residential only. A reliability choice; it does not get past Reddit's block on search, and it adds nothing to the price. Default auto."),
+      proxy_mode: z.enum(["auto", "residential"]).optional().describe("Used only for Product Hunt pages; the Reddit post embed always uses the datacenter proxy. auto uses the Apify datacenter proxy and moves to residential when refused; residential uses residential only. A reliability choice; it does not get past Reddit's block on search, and it adds nothing to the price. Default auto."),
     },
   },
   async (args) => runActor("SoDryzzsjmY3SsiyG", "B2B Reddit Conversation Monitor", compact(args as Record<string, unknown>)),

@@ -137,7 +137,7 @@ Every buyer facing input of the actor, unchanged. Omitted inputs take the actor'
 | `state_key` | string | Names the seen list |
 | `webhook_url` | string | Optional https URL for a Slack compatible POST |
 | `webhook_top_n` | string | Default 10 |
-| `proxy_mode` | string | auto or residential, for the post embed and Product Hunt only. Default auto |
+| `proxy_mode` | string | auto or residential, for Product Hunt only. Default auto |
 
 ## Pricing
 
@@ -154,7 +154,7 @@ A blocked run charges only the start fee. Blocked, error, and no results rows, a
 
 ## Your keys
 
-The actor needs no key. With no key it reads Reddit through Arctic Shift. A Serper or Brave key of your own (`search_api_key`) adds keyword search across all of Reddit and a fallback route; you pay the search service for its calls, and the actor's prices do not change. Exa is not offered: it returns no reddit.com pages. The actor holds no key of its own; your key is passed to your own Apify run, marked secret, and never written to a row, a log, or the run summary. The search key route was tested with recorded answers and with refused keys; your first run with your key is its live test. Proxy traffic adds nothing to your price: Mamba Labs pays the platform costs of the run. `proxy_mode` is a reliability setting for the post embed and Product Hunt only.
+The actor needs no key. With no key it reads Reddit through Arctic Shift. A Serper or Brave key of your own (`search_api_key`) adds keyword search across all of Reddit and a fallback route; you pay the search service for its calls, and the actor's prices do not change. Exa is not offered: it returns no reddit.com pages. The actor holds no key of its own; your key is passed to your own Apify run, marked secret, and never written to a row, a log, or the run summary. The search key route was tested with recorded answers and with refused keys; your first run with your key is its live test. Proxy traffic adds nothing to your price: Mamba Labs pays the platform costs of the run. `proxy_mode` is a reliability setting for Product Hunt only.
 
 ## FAQ
 
